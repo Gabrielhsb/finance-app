@@ -8,12 +8,12 @@ const globalForPrisma = globalThis as unknown as {
 
 function createPrismaClient() {
   const dbUrl = process.env['DATABASE_URL'] ?? 'file:./dev.db'
-  const dbPath = dbUrl.replace('file:', '')
+  const dbPath = dbUrl.startsWith('file:') ? dbUrl.slice(5) : dbUrl
   const resolvedPath = path.isAbsolute(dbPath)
     ? dbPath
     : path.resolve(process.cwd(), dbPath)
   const adapter = new PrismaBetterSqlite3({ url: resolvedPath })
-  return new PrismaClient({ adapter, log: ['query'] })
+  return new PrismaClient({ adapter, log: process.env.NODE_ENV !== 'production' ? ['query'] : [] })
 }
 
 export const prisma = globalForPrisma.prisma ?? createPrismaClient()

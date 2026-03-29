@@ -7,7 +7,8 @@ export function formatCurrency(value: number): string {
 
 export function formatMonth(mes: number, ano: number): string {
   const date = new Date(ano, mes - 1, 1)
-  return date.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })
+  const formatted = date.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })
+  return formatted.charAt(0).toUpperCase() + formatted.slice(1)
 }
 
 export function getCurrentMonth(): { mes: number; ano: number } {
