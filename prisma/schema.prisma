@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Cartao {
+  id                String            @id @default(cuid())
+  nome              String
+  bandeira          String
+  cor               String
+  faturas           FaturaCartao[]
+  despesasFixas     DespesaFixa[]
+  despesasVariaveis DespesaVariavel[]
+  createdAt         DateTime          @default(now())
+}
+
+model Categoria {
+  id                String            @id @default(cuid())
+  nome              String
+  cor               String
+  icone             String
+  despesasFixas     DespesaFixa[]
+  despesasVariaveis DespesaVariavel[]
+}
+
+model ReceitaFixa {
+  id        String   @id @default(cuid())
+  descricao String
+  valor     Float
+  diaDoMes  Int
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model ReceitaVariavel {
+  id        String   @id @default(cuid())
+  descricao String
+  valor     Float
+  data      DateTime
+  createdAt DateTime @default(now())
+}
+
+model DespesaFixa {
+  id          String    @id @default(cuid())
+  descricao   String
+  valor       Float
+  diaDoMes    Int
+  categoriaId String
+  cartaoId    String?
+  ativo       Boolean   @default(true)
+  categoria   Categoria @relation(fields: [categoriaId], references: [id])
+  cartao      Cartao?   @relation(fields: [cartaoId], references: [id])
+  createdAt   DateTime  @default(now())
+}
+
+model DespesaVariavel {
+  id          String    @id @default(cuid())
+  descricao   String
+  valor       Float
+  data        DateTime
+  categoriaId String
+  cartaoId    String?
+  categoria   Categoria @relation(fields: [categoriaId], references: [id])
+  cartao      Cartao?   @relation(fields: [cartaoId], references: [id])
+  createdAt   DateTime  @default(now())
+}
+
+model FaturaCartao {
+  id        String   @id @default(cuid())
+  cartaoId  String
+  mes       Int
+  ano       Int
+  valor     Float
+  cartao    Cartao   @relation(fields: [cartaoId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([cartaoId, mes, ano])
+}
