@@ -5,27 +5,42 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
 }
 
 model Cartao {
-  id                String            @id @default(cuid())
+  id                String             @id @default(cuid())
   nome              String
   bandeira          String
   cor               String
   faturas           FaturaCartao[]
   despesasFixas     DespesaFixa[]
   despesasVariaveis DespesaVariavel[]
-  createdAt         DateTime          @default(now())
+  comprasParceladas CompraParcelada[]
+  createdAt         DateTime           @default(now())
 }
 
 model Categoria {
-  id                String            @id @default(cuid())
+  id                String             @id @default(cuid())
   nome              String
   cor               String
   icone             String
   despesasFixas     DespesaFixa[]
   despesasVariaveis DespesaVariavel[]
+  comprasParceladas CompraParcelada[]
+}
+
+model CompraParcelada {
+  id            String     @id @default(cuid())
+  descricao     String
+  valorParcela  Float
+  totalParcelas Int
+  mesInicio     Int
+  anoInicio     Int
+  cartaoId      String?
+  categoriaId   String?
+  cartao        Cartao?    @relation(fields: [cartaoId], references: [id])
+  categoria     Categoria? @relation(fields: [categoriaId], references: [id])
+  createdAt     DateTime   @default(now())
 }
 
 model ReceitaFixa {

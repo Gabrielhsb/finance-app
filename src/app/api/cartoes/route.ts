@@ -1,10 +1,18 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url)
+  const mes = Number(searchParams.get('mes')) || null
+  const ano = Number(searchParams.get('ano')) || null
+
   const cartoes = await prisma.cartao.findMany({
     orderBy: { nome: 'asc' },
-    include: { faturas: { orderBy: { createdAt: 'desc' }, take: 1 } },
+    include: {
+      faturas: mes && ano
+        ? { where: { mes, ano } }
+        : { orderBy: { createdAt: 'desc' }, take: 1 },
+    },
   })
   return NextResponse.json(cartoes)
 }

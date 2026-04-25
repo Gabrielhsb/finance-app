@@ -1,46 +1,98 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* next-themes sets class="dark" on <html> — this syncs Tailwind dark: with it */
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Brand — violet */
+  --color-brand-50:   oklch(97%  0.015 292);
+  --color-brand-100:  oklch(93%  0.040 292);
+  --color-brand-200:  oklch(86%  0.080 292);
+  --color-brand-300:  oklch(77%  0.150 292);
+  --color-brand-400:  oklch(67%  0.220 292);
+  --color-brand-500:  oklch(56%  0.260 292);
+  --color-brand-600:  oklch(50%  0.270 292);
+  --color-brand-700:  oklch(44%  0.240 292);
+  --color-brand-800:  oklch(36%  0.200 292);
+  --color-brand-950:  oklch(16%  0.040 292);
+
+  /* Semantic surfaces */
+  --color-surface-page:    var(--surface-page);
+  --color-surface-card:    var(--surface-card);
+  --color-surface-raised:  var(--surface-raised);
+  --color-surface-hover:   var(--surface-hover);
+  --color-surface-active:  var(--surface-active);
+
+  /* Semantic borders */
+  --color-border:          var(--border);
+  --color-border-muted:    var(--border-muted);
+  --color-border-strong:   var(--border-strong);
+
+  /* Semantic text */
+  --color-text-primary:    var(--text-primary);
+  --color-text-secondary:  var(--text-secondary);
+  --color-text-tertiary:   var(--text-tertiary);
+  --color-text-disabled:   var(--text-disabled);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --surface-page:   oklch(97.5% 0.004 292);
+  --surface-card:   oklch(99.6% 0.002 292);
+  --surface-raised: oklch(98.5% 0.003 292);
+  --surface-hover:  oklch(96%   0.007 292);
+  --surface-active: oklch(93.5% 0.013 292);
+
+  --border:         oklch(90%   0.007 292);
+  --border-muted:   oklch(94%   0.005 292);
+  --border-strong:  oklch(82%   0.010 292);
+
+  --text-primary:   oklch(16%   0.020 292);
+  --text-secondary: oklch(44%   0.015 292);
+  --text-tertiary:  oklch(62%   0.010 292);
+  --text-disabled:  oklch(74%   0.008 292);
+}
+
+.dark {
+  --surface-page:   oklch(10%   0.009 292);
+  --surface-card:   oklch(14.5% 0.012 292);
+  --surface-raised: oklch(17%   0.012 292);
+  --surface-hover:  oklch(19%   0.012 292);
+  --surface-active: oklch(22%   0.015 292);
+
+  --border:         oklch(23%   0.013 292);
+  --border-muted:   oklch(18%   0.009 292);
+  --border-strong:  oklch(31%   0.016 292);
+
+  --text-primary:   oklch(93%   0.007 292);
+  --text-secondary: oklch(68%   0.009 292);
+  --text-tertiary:  oklch(50%   0.007 292);
+  --text-disabled:  oklch(38%   0.006 292);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--surface-page);
+  color: var(--text-primary);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Scrollbar customizada */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
+.tabular { font-variant-numeric: tabular-nums; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 3px;
-}
-.dark ::-webkit-scrollbar-thumb {
-  background: #4b5563;
+  background: var(--border);
+  border-radius: 10px;
 }
 
-/* Transição suave de tema */
-*, *::before, *::after {
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

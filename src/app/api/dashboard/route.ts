@@ -9,14 +9,12 @@ export async function GET(request: Request) {
   const inicio = new Date(ano, mes - 1, 1)
   const fim = new Date(ano, mes, 1)
 
-  const [receitasFixas, receitasVariaveis, despesasFixas, despesasVariaveis] = await Promise.all([
+  const [receitasFixas, receitasVariaveis, despesasFixas, despesasVariaveis, faturas] = await Promise.all([
     prisma.receitaFixa.findMany({ where: { ativo: true } }),
     prisma.receitaVariavel.findMany({ where: { data: { gte: inicio, lt: fim } } }),
     prisma.despesaFixa.findMany({ where: { ativo: true }, include: { categoria: true } }),
-    prisma.despesaVariavel.findMany({
-      where: { data: { gte: inicio, lt: fim } },
-      include: { categoria: true },
-    }),
+    prisma.despesaVariavel.findMany({ where: { data: { gte: inicio, lt: fim } }, include: { categoria: true } }),
+    prisma.faturaCartao.findMany({ where: { mes, ano } }),
   ])
 
   const totalReceitas =
@@ -26,7 +24,8 @@ export async function GET(request: Request) {
   const totalDespesasFixas = despesasFixas.reduce((s, d) => s + d.valor, 0)
   const totalDespesasVariaveis = despesasVariaveis.reduce((s, d) => s + d.valor, 0)
   const totalDespesas = totalDespesasFixas + totalDespesasVariaveis
-  const saldo = totalReceitas - totalDespesas
+  const totalFaturas = faturas.reduce((s, f) => s + f.valor, 0)
+  const saldo = totalReceitas - totalDespesas - totalFaturas
 
   // Gastos por categoria
   const porCategoria: Record<string, { nome: string; cor: string; icone: string; valor: number }> = {}
@@ -39,6 +38,10 @@ export async function GET(request: Request) {
     porCategoria[catId].valor += d.valor
   }
 
+  if (totalFaturas > 0) {
+    porCategoria['_cartoes'] = { nome: 'Crédito', cor: '#8b5cf6', icone: 'credit-card', valor: totalFaturas }
+  }
+
   // Evolução últimos 6 meses
   const evolucao = []
   for (let i = 5; i >= 0; i--) {
@@ -48,18 +51,19 @@ export async function GET(request: Request) {
     const ini = new Date(a, m - 1, 1)
     const fim2 = new Date(a, m, 1)
 
-    const [rv, dv, rf, df] = await Promise.all([
+    const [rv, dv, rf, df, fat] = await Promise.all([
       prisma.receitaVariavel.aggregate({ where: { data: { gte: ini, lt: fim2 } }, _sum: { valor: true } }),
       prisma.despesaVariavel.aggregate({ where: { data: { gte: ini, lt: fim2 } }, _sum: { valor: true } }),
       prisma.receitaFixa.findMany({ where: { ativo: true } }),
       prisma.despesaFixa.findMany({ where: { ativo: true } }),
+      prisma.faturaCartao.aggregate({ where: { mes: m, ano: a }, _sum: { valor: true } }),
     ])
 
     evolucao.push({
       mes: m,
       ano: a,
       receitas: (rv._sum.valor ?? 0) + rf.reduce((s, r) => s + r.valor, 0),
-      despesas: (dv._sum.valor ?? 0) + df.reduce((s, d) => s + d.valor, 0),
+      despesas: (dv._sum.valor ?? 0) + df.reduce((s, d) => s + d.valor, 0) + (fat._sum.valor ?? 0),
     })
   }
 
@@ -68,8 +72,9 @@ export async function GET(request: Request) {
     totalDespesas,
     totalDespesasFixas,
     totalDespesasVariaveis,
+    totalFaturas,
     saldo,
-    percentualGasto: totalReceitas > 0 ? (totalDespesas / totalReceitas) * 100 : 0,
+    percentualGasto: totalReceitas > 0 ? ((totalDespesas + totalFaturas) / totalReceitas) * 100 : 0,
     porCategoria: Object.values(porCategoria),
     evolucao,
   })

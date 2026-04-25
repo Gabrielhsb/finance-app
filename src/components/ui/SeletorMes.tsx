@@ -21,14 +21,20 @@ export function SeletorMes({ mes, ano, onChange }: SeletorMesProps) {
   }
 
   return (
-    <div className="flex items-center gap-3">
-      <button onClick={anterior} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+    <div className="flex items-center gap-1">
+      <button
+        onClick={anterior}
+        className="p-1.5 rounded-lg hover:bg-surface-hover transition-colors text-text-tertiary hover:text-text-primary"
+      >
         <ChevronLeft className="w-4 h-4" />
       </button>
-      <span className="text-sm font-medium text-gray-700 dark:text-gray-300 capitalize min-w-32 text-center">
+      <span className="text-sm font-medium text-text-secondary capitalize w-32 text-center">
         {formatMonth(mes, ano)}
       </span>
-      <button onClick={proximo} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+      <button
+        onClick={proximo}
+        className="p-1.5 rounded-lg hover:bg-surface-hover transition-colors text-text-tertiary hover:text-text-primary"
+      >
         <ChevronRight className="w-4 h-4" />
       </button>
     </div>

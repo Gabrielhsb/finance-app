@@ -7,8 +7,8 @@ interface HeaderProps {
 
 export function Header({ title, children }: HeaderProps) {
   return (
-    <header className="h-16 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex items-center justify-between px-6 shrink-0">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h2>
+    <header className="h-14 border-b border-border bg-surface-card flex items-center justify-between px-6 shrink-0">
+      <h1 className="text-sm font-semibold text-text-primary">{title}</h1>
       <div className="flex items-center gap-2">
         {children}
         <ThemeToggle />

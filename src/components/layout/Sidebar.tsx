@@ -8,6 +8,7 @@ import {
   TrendingUp,
   TrendingDown,
   Tag,
+  Layers,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -16,6 +17,7 @@ const navItems = [
   { href: '/cartoes', label: 'Cartões', icon: CreditCard },
   { href: '/receitas', label: 'Receitas', icon: TrendingUp },
   { href: '/despesas', label: 'Despesas', icon: TrendingDown },
+  { href: '/parcelas', label: 'Parcelas', icon: Layers },
   { href: '/categorias', label: 'Categorias', icon: Tag },
 ]
 
@@ -23,11 +25,17 @@ export function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="w-16 md:w-56 min-h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col py-6 px-2 md:px-4 shrink-0">
-      <div className="mb-8 hidden md:block px-2">
-        <h1 className="text-xl font-bold text-indigo-600 dark:text-indigo-400">💰 Finança</h1>
+    <aside className="w-56 shrink-0 flex flex-col bg-surface-card border-r border-border min-h-screen">
+      <div className="h-14 px-5 flex items-center border-b border-border shrink-0">
+        <div className="flex items-center gap-2.5">
+          <div className="w-6 h-6 rounded-md bg-brand-600 flex items-center justify-center shrink-0">
+            <span className="text-white text-[10px] font-bold leading-none tracking-wider">F</span>
+          </div>
+          <span className="text-sm font-semibold text-text-primary tracking-tight">Finança</span>
+        </div>
       </div>
-      <nav className="flex flex-col gap-1">
+
+      <nav className="flex-1 px-2.5 py-3 flex flex-col gap-0.5">
         {navItems.map(({ href, label, icon: Icon }) => {
           const active = pathname === href
           return (
@@ -35,14 +43,19 @@ export function Sidebar() {
               key={href}
               href={href}
               className={cn(
-                'flex items-center gap-3 px-2 md:px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+                'flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
                 active
-                  ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950 dark:text-indigo-400'
-                  : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800'
+                  ? 'bg-brand-50 text-brand-700 dark:bg-brand-950 dark:text-brand-300'
+                  : 'text-text-secondary hover:bg-surface-hover hover:text-text-primary'
               )}
             >
-              <Icon className="w-5 h-5 shrink-0" />
-              <span className="hidden md:inline">{label}</span>
+              <Icon
+                className={cn(
+                  'w-4 h-4 shrink-0',
+                  active ? 'text-brand-600 dark:text-brand-400' : 'text-text-tertiary'
+                )}
+              />
+              {label}
             </Link>
           )
         })}
