@@ -47,3 +47,10 @@ next-env.d.ts
 *.db-journal
 *.db-wal
 *.db-shm
+
+# agent skills e configurações de ferramentas
+.agents/
+.claude/
+.kiro/
+skills-lock.json
+PRODUCT.md
